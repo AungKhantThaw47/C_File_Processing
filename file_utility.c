@@ -8,7 +8,6 @@
 
 void String_Token_Check()
 {
-    // char str[80] = "Product_ID, Product_Name, Product_Quantity, Product_Coste";
     char str[80] = "12, product_one, 34, 23.000000";
     const char s[2] = ",";
     char *token;
@@ -38,6 +37,7 @@ const char *getfield(char *line, int num)
     return NULL;
 }
 
+// @docs - To Open file with Write mode using file name
 FILE *file_write_open(char fileName[255])
 {
     FILE *fpt;
@@ -45,6 +45,7 @@ FILE *file_write_open(char fileName[255])
     return fpt;
 }
 
+// @docs - To Open file with Read mode using file name
 FILE *file_read_open(char fileName[255])
 {
     FILE *fpt;
@@ -52,6 +53,7 @@ FILE *file_read_open(char fileName[255])
     return fpt;
 }
 
+// @docs - To Open file with Append mode using file name
 FILE *file_append_open(char fileName[255])
 {
     FILE *fpt;
@@ -59,6 +61,7 @@ FILE *file_append_open(char fileName[255])
     return fpt;
 }
 
+// @docs - To initialize Product database
 void Product_initialize()
 {
     FILE *fpt;
@@ -70,6 +73,7 @@ void Product_initialize()
     fileClose(fpt);
 }
 
+// @docs - To initialize POS database
 void POS_initialize()
 {
     FILE *fpt;
@@ -81,6 +85,7 @@ void POS_initialize()
     fileClose(fpt);
 }
 
+// @docs - To initialize Sale database
 void Sale_initiaize()
 {
     FILE *fpt;
@@ -92,6 +97,7 @@ void Sale_initiaize()
     fileClose(fpt);
 }
 
+// @docs - To add new Product to database
 int new_Product(struct Product pd)
 {
     FILE *fpt;
@@ -106,7 +112,6 @@ int new_Product(struct Product pd)
         struct Product checkPd = Product_Search(pd.product_id);
         if (checkPd.product_id == NULL)
         {
-            // printf("This is new\n");
             fpt = file_append_open(PRODUCT_FILE);
             fprintf(fpt, "\n%d,%s,%d,%lf", pd.product_id, pd.product_name, pd.product_quantity, pd.product_cost);
             fileClose(fpt);
@@ -117,6 +122,7 @@ int new_Product(struct Product pd)
     return 0;
 }
 
+// @docs - To add new POS to database
 int new_POS(struct POS pos)
 {
     FILE *fpt;
@@ -135,6 +141,7 @@ int new_POS(struct POS pos)
     return 1;
 }
 
+// @docs - To add new Sale to database
 int new_Sale(struct Sale sale)
 {
     FILE *fpt;
@@ -153,45 +160,39 @@ int new_Sale(struct Sale sale)
     return 1;
 }
 
-int Product_Update(struct Product InPd){
+// @docs - To Update one row of Product database using Product ID
+int Product_Update(struct Product InPd)
+{
     FILE *fpt;
     FILE *tmpFile;
     struct Product tempPd;
     int state = 0;
-    // printf("Product Delete\n");
+
     char ch;
-    // Opening file in reading mode
     tmpFile = file_write_open("tmp");
     fpt = fopen(PRODUCT_FILE, "r");
     if (NULL == fpt)
     {
         printf("file can't be opened \n");
     }
-    // Printing what is written in file
-    // character by character using loop.
     char line[1024];
     while (fgets(line, 1024, fpt))
     {
-        // printf("Working\n");
-        // printf("%s", line);
         char TempLine[1024];
         strcpy(TempLine, line);
         int foundID = atoi(strtok(line, ","));
 
         char *tmp = strdup(line);
-        // printf("Product ID: %d\n", foundID);
+
         if (foundID == InPd.product_id)
         {
-            // printf("Found\n");
-            // Display_Product(InPd);
-            // printf("%d,%s,%d,%lf", InPd.product_id, InPd.product_name, InPd.product_quantity, InPd.product_cost);
+
             fprintf(tmpFile, "%d,%s,%d,%lf", InPd.product_id, InPd.product_name, InPd.product_quantity, InPd.product_cost);
             state = 1;
         }
         else
         {
-            // printf("Else\n");
-            // printf("%s", TempLine);
+
             fprintf(tmpFile, "%s", TempLine);
         }
         free(tmp);
@@ -199,10 +200,11 @@ int Product_Update(struct Product InPd){
     fclose(fpt);
     fclose(tmpFile);
     remove(PRODUCT_FILE);
-    rename("tmp",PRODUCT_FILE);
+    rename("tmp", PRODUCT_FILE);
     return state;
 }
 
+// @docs - To Delete one row of Product database using Product ID
 struct Product Product_Delete(int id)
 {
     FILE *fpt;
@@ -210,36 +212,31 @@ struct Product Product_Delete(int id)
     struct Product pd;
     struct Product tempPd;
     pd.product_id = NULL;
-    // printf("Product Delete\n");
+
     char ch;
-    // Opening file in reading mode
     tmpFile = file_write_open("tmp");
     fpt = fopen(PRODUCT_FILE, "r");
     if (NULL == fpt)
     {
         printf("file can't be opened \n");
     }
-    // Printing what is written in file
-    // character by character using loop.
     char line[1024];
     while (fgets(line, 1024, fpt))
     {
-        // printf("Working\n");
-        // printf("%s", line);
+
         char TempLine[1024];
         strcpy(TempLine, line);
         int foundID = atoi(strtok(line, ","));
 
         char *tmp = strdup(line);
-        // printf("Product ID: %d\n", foundID);
+
         if (foundID == id)
         {
-            // printf("Found\n");
+
             pd.product_id = foundID;
             strcpy(pd.product_name, strtok(NULL, ","));
             pd.product_quantity = atoi(strtok(NULL, ","));
             pd.product_cost = atof(strtok(NULL, ","));
-            // Display_Product(pd);
         }
         else
         {
@@ -250,41 +247,36 @@ struct Product Product_Delete(int id)
     fclose(fpt);
     fclose(tmpFile);
     remove(PRODUCT_FILE);
-    rename("tmp",PRODUCT_FILE);
+    rename("tmp", PRODUCT_FILE);
     return pd;
 };
 
+// @docs - To Search one row of Product database using Product ID
 struct Product Product_Search(int id)
 {
     FILE *fpt;
     struct Product pd;
     pd.product_id = NULL;
-    // printf("Product Search\n");
+
     char ch;
-    // Opening file in reading mode
     fpt = fopen(PRODUCT_FILE, "r");
     if (NULL == fpt)
     {
         printf("file can't be opened \n");
     }
-    // Printing what is written in file
-    // character by character using loop.
     char line[1024];
     while (fgets(line, 1024, fpt))
     {
-        // printf("%s", line);
-        int foundID = atoi(strtok(line, ","));
 
+        int foundID = atoi(strtok(line, ","));
         char *tmp = strdup(line);
-        // printf("Product ID: %d\n", foundID);
+
         if (foundID == id)
         {
-            // printf("Found\n");
             pd.product_id = foundID;
             strcpy(pd.product_name, strtok(NULL, ","));
             pd.product_quantity = atoi(strtok(NULL, ","));
             pd.product_cost = atof(strtok(NULL, ","));
-            // Display_Product(pd);
             free(tmp);
             break;
         }
@@ -294,11 +286,13 @@ struct Product Product_Search(int id)
     return pd;
 }
 
+// @docs - To Close file after every operation
 void fileClose(FILE *fpt)
 {
     fclose(fpt);
 }
 
+// @docs - To Check if file already exists or not
 int is_file_exists(const char *fname)
 {
     FILE *file;
@@ -310,11 +304,13 @@ int is_file_exists(const char *fname)
     return 0;
 }
 
+// @docs - To Display Product Data
 void Display_Product(struct Product pd)
 {
     printf("Product");
     printf("Product ID: %d\nProduct Name: %s\nProduct Quantity: %d\nProduct Cost: %lf\n", pd.product_id, pd.product_name, pd.product_quantity, pd.product_cost);
 }
+
 void Display_POS(struct POS pos)
 {
     printf("Bill ID: %d\nCustomer Name: %s\nTime: %s\nProduct Quantity: %d\nProduct Price: %lf\nProduct Cost: %lf\n", pos.bill_id, pos.customer_name, asctime(&pos.transaction_datetime), pos.product_quantity, pos.product_price, pos.product_cost);
