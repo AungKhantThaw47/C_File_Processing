@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.js": "javascriptreact",
+        "file_utility.h": "c",
+        "model.h": "c"
+    }
+}
