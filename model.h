@@ -19,6 +19,7 @@ struct Product
 };
 struct Sale
 {
+    int transaction_id;
     int product_id;
     char product_name[255];
     int product_quantity;

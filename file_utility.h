@@ -10,8 +10,14 @@ extern int new_Product(struct Product pd);
 extern int new_POS(struct POS pos);
 extern int new_Sale(struct Sale sale);
 extern int Product_Update(struct Product InPd);
+extern int POS_Update(struct POS InPos);
+extern int Sale_Update(struct Sale InSale);
 extern struct Product Product_Delete(int id);
+extern struct POS POS_Delete(int id);
+extern struct Sale Sale_Delete(int id);
 extern struct Product Product_Search(int id);
+extern struct POS POS_Search(int id);           //Fixed By MMA
+extern struct Sale Sale_Search(int id);          //Fixed By MMA
 extern void fileClose(FILE *fpt);
 extern int is_file_exists(const char *fname);
 extern void Display_Product(struct Product pd);

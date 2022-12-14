@@ -23,3 +23,5 @@
 gcc -c -g file_utility.c ; gcc -c -g lib_test.c ; gcc -o lib_test lib_test.o file_utility.o
 ./lib_test 
 ```
+
+ok
